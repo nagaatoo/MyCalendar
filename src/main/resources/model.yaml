@@ -1,0 +1,243 @@
+openapi: 3.0.2
+info:
+  description: Календарь
+  title: Calendar-service API
+  version: 0.0.1
+components:
+  schemas:
+    Profile:
+      type: object
+      description: Профиль пользователя
+      properties:
+        login:
+          type: string
+          description: Логин пользователя
+        email:
+          type: string
+          description: email пользователя
+        phone:
+          type: string
+          description: Номер телефона
+        active:
+          type: boolean
+          description: Признак активного пользователя
+        firstName:
+          type: string
+          description: Имя
+        lastName:
+          type: string
+          description: Фамилия
+        middleName:
+          type: string
+          description: Отчество
+    User:
+      type: object
+      description: Метаданные пользователя
+      properties:
+        login:
+          type: string
+          description: Логин
+        FIO:
+          type: string
+          description: Полное имя пользователя
+    UserAuth:
+      type: object
+      properties:
+        login:
+          type: string
+        password:
+          type: string
+    Organization:
+      type: object
+      description: Метаданные организации
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+          description: Наименование
+        email:
+          type: string
+          description: email организации
+    OrganizationCreate:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Наименование
+        email:
+          type: string
+          description: email организации
+    ScheduleCreate:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        workDays:
+          type: integer
+          description: Диапазон рабочих дней
+        weekendDays:
+          type: integer
+          description: Диапазон не рабочих дней
+        days:
+          type: string
+          description: json с расписанием
+        users:
+          type: array
+          items:
+            type: string
+    ScheduleGenerate:
+      type: object
+      properties:
+        users:
+          type: array
+          items:
+            type: string
+    Schedule:
+      type: object
+      description: Расписание
+      properties:
+        id:
+          type: integer
+          format: int64
+        workDays:
+          type: integer
+          description: Диапазон рабочих дней
+        weekendDays:
+          type: integer
+          description: Диапазон не рабочих дней
+        createdBy:
+          type: string
+          description: Создатель
+        created:
+          type: string
+          format: date
+          description: Дата создания
+        updatedBy:
+          type: string
+          description: Обновлено
+        update:
+          type: string
+          format: date
+          description: Дата обновления
+        days:
+          type: string
+          description: Сетка расписания
+    ScheduleShort:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        title:
+          type: string
+          description: Наименование
+        workDays:
+          type: integer
+          description: Диапазон рабочих дней
+        weekendDays:
+          type: integer
+          description: Диапазон не рабочих дней
+    ScheduleList:
+      type: object
+      description: Список расписаний
+      properties:
+        pageNo:
+          type: integer
+          description: Номер страницы
+        pageSize:
+          type: integer
+          description: Размер страницы
+        size:
+          type: integer
+          format: int64
+          description: Общее количество календарей
+        schedules:
+          $ref: '#/components/schemas/ScheduleShort'
+    Calendar:
+      type: object
+      description: Календарь
+      properties:
+        id:
+          type: integer
+          format: int64
+        title:
+          type: string
+          description: Наименование
+        owner:
+          type: object
+          description: Логин владельца
+        organization:
+          $ref: '#/components/schemas/Organization'
+          description: Организация, привязанная к календарю
+        schedules:
+          type: array
+          $ref: '#/components/schemas/ScheduleShort'
+        createdBy:
+          type: string
+          description: Создатель
+        created:
+          type: string
+          format: date
+          description: Дата создания
+        updatedBy:
+          type: string
+          description: Обновлено
+        update:
+          type: string
+          format: date
+          description: Дата обновления
+    CalendarCreate:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Наименование
+        ownerLogin:
+          type: string
+        organizationId:
+          type: integer
+          format: int64
+          description: Организация
+    CalendarShort:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        title:
+          type: string
+          description: Наименование
+        organization:
+          description: Организация
+          $ref: '#/components/schemas/Organization'
+    CalendarList:
+      type: object
+      description: Список календарей пользователя
+      properties:
+        pageNo:
+          type: integer
+          description: Номер страницы
+        pageSize:
+          type: integer
+          description: Размер страницы
+        size:
+          type: integer
+          format: int64
+          description: Общее количество календарей
+        calendars:
+          $ref: '#/components/schemas/CalendarShort'
+    Error:
+      type: object
+      properties:
+        timestamp:
+          type: string
+          description: Время исключения
+        message:
+          type: string
+          description: Описание ошибки
+        serviceName:
+          type: string
+          description: Имя недоступного интеграционного сервиса

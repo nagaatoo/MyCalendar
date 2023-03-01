@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: My calendar
+  jpa:
+    open-in-view: false
+  port: 8080
+
+jwt:
+  secret: mySecret
+
+app:
+  holidayUrl: https://raw.githubusercontent.com/d10xa/holidays-calendar/master/json/superjob2023.json

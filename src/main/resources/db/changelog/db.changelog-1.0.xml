@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.5.xsd">
+
+    <changeSet id="create-calendar-object-table" author="e.khodosov">
+        <createTable tableName="users" remarks="Пользователи системы">
+            <column name="id" type="bigserial">
+                <constraints primaryKey="true" primaryKeyName="pk_user_id"/>
+            </column>
+            <column name="login" type="varchar(24)" remarks="Логин"/>
+            <column name="password" type="varchar(128)" remarks="Пароль"/>
+            <column name="email" type="varchar(64)" remarks="Персональная почта"/>
+            <column name="phone" type="varchar(11)" remarks="Телефон без специальных символов"/>
+            <column name="active" type="boolean" remarks="Признак активного пользователя"/>
+            <column name="first_name" type="varchar(64)" remarks="Имя"/>
+            <column name="last_name" type="varchar(64)" remarks="Фамилия"/>
+            <column name="middle_name" type="varchar(64)" remarks="Отчество"/>
+        </createTable>
+        <createSequence sequenceName="user_id_seq" startValue="1" incrementBy="1"/>
+        <addUniqueConstraint tableName="users" columnNames="login"
+                             constraintName="uk_user_login"/>
+
+        <createTable tableName="organization" remarks="Организация">
+            <column name="id" type="bigserial">
+                <constraints primaryKey="true" primaryKeyName="pk_organization_id"/>
+            </column>
+            <column name="name" type="varchar(256)" remarks="Название"/>
+            <column name="owner_login" type="varchar(24)" remarks="Владелец организации"/>
+            <column name="email" type="varchar(64)" remarks="Почта организации"/>
+            <column name="created" type="datetime" remarks="Дата создания"/>
+            <column name="created_by" type="text" remarks="Кем создано"/>
+            <column name="updated" type="datetime" remarks="Дата обновления"/>
+            <column name="updated_by" type="text" remarks="Кем обновлено"/>
+        </createTable>
+        <createSequence sequenceName="organization_id_seq" startValue="1" incrementBy="1"/>
+        
+        <createTable tableName="calendar" remarks="Календарь">
+            <column name="id" type="bigserial">
+                <constraints primaryKey="true" primaryKeyName="pk_calendar_id"/>
+            </column>
+            <column name="title" type="varchar(256)" remarks="Название"/>
+            <column name="organization_id" type="bigserial" remarks="Организация"/>
+            <column name="owner_login" type="varchar(24)" remarks="Владелец календаря"/>
+            <column name="created" type="datetime" remarks="Дата создания"/>
+            <column name="created_by" type="text" remarks="Кем создано"/>
+            <column name="updated" type="datetime" remarks="Дата обновления"/>
+            <column name="updated_by" type="text" remarks="Кем обновлено"/>
+        </createTable>
+        <createSequence sequenceName="calendar_id_seq" startValue="1" incrementBy="1"/>
+        <addForeignKeyConstraint baseTableName="calendar" baseColumnNames="organization_id"
+                                 referencedTableName="organization" referencedColumnNames="id"
+                                 onDelete="NO ACTION"
+                                 constraintName="fk_calendar_organization"/>
+        
+        <createTable tableName="weekends" remarks="Не рабочие дни, установленные владельцем календаря">
+            <column name="id" type="bigserial">
+                <constraints primaryKey="true" primaryKeyName="pk_weekends_id"/>
+            </column>
+            <column name="calendar_id" type="bigserial" remarks="Календарь"/>
+            <column name="days" type="jsonb" remarks="JSON структура со списком не рабочих дней, установленных владельцем"/>
+            <column name="created" type="datetime" remarks="Дата создания"/>
+            <column name="created_by" type="text" remarks="Кем создано"/>
+            <column name="updated" type="datetime" remarks="Дата обновления"/>
+            <column name="updated_by" type="text" remarks="Кем обновлено"/>
+        </createTable>
+        <createSequence sequenceName="weekends_id_seq" startValue="1" incrementBy="1"/>
+        <addForeignKeyConstraint baseTableName="weekends" baseColumnNames="calendar_id"
+                                 referencedTableName="calendar" referencedColumnNames="id"
+                                 onDelete="NO ACTION"
+                                 constraintName="fk_weekends_calendar"/>
+
+        <createTable tableName="schedule" remarks="Рассписание">
+            <column name="id" type="bigserial">
+                <constraints primaryKey="true" primaryKeyName="pk_schedule_id"/>
+            </column>
+            <column name="work_days" type="int" remarks="Тип расписания: рабочие дни"/>
+            <column name="weekend_days" type="int" remarks="Тип расписания: выходные дни" />
+            <column name="days" type="jsonb" remarks="JSON структура с расписанием"/>
+            <column name="title" type="varchar(300)" remarks="Название рассписания"/>
+            <column name="created" type="datetime" remarks="Дата создания"/>
+            <column name="created_by" type="text" remarks="Кем создано"/>
+            <column name="updated" type="datetime" remarks="Дата обновления"/>
+            <column name="updated_by" type="text" remarks="Кем обновлено"/>
+        </createTable>
+        <createSequence sequenceName="schedule_id_seq" startValue="1" incrementBy="1"/>
+
+        <createTable tableName="team" remarks="Команды">
+            <column name="id" type="bigserial">
+                <constraints primaryKey="true" primaryKeyName="pk_team_id"/>
+            </column>
+            <column name="user_login" type="varchar(24)" remarks="Целевой пользователь"/>
+            <column name="calendar_id" type="bigserial" remarks="Целевой календарь"/>
+            <column name="schedule_id" type="bigserial" remarks="Целевое расписание"/>
+            <column name="role" type="varchar(10)" remarks="Роль пользователя"/>
+            <column name="created" type="datetime" remarks="Дата создания"/>
+            <column name="created_by" type="text" remarks="Кем создано"/>
+            <column name="updated" type="datetime" remarks="Дата обновления"/>
+            <column name="updated_by" type="text" remarks="Кем обновлено"/>
+        </createTable>
+        <createSequence sequenceName="team_id_seq" startValue="1" incrementBy="1"/>
+        <addForeignKeyConstraint baseTableName="team" baseColumnNames="calendar_id"
+                                 referencedTableName="calendar" referencedColumnNames="id"
+                                 onDelete="NO ACTION"
+                                 constraintName="fk_team_calendar"/>
+        <addForeignKeyConstraint baseTableName="team" baseColumnNames="schedule_id"
+                                 referencedTableName="schedule" referencedColumnNames="id"
+                                 onDelete="NO ACTION"
+                                 constraintName="fk_team_schedule"/>
+        
+        <createTable tableName="task" remarks="Задачи">
+            <column name="id" type="bigserial">
+                <constraints primaryKey="true" primaryKeyName="pk_task_id"/>
+            </column>
+            <column name="personal" type="boolean" remarks="Признак личной задачи"/>
+            <column name="user_login" type="varchar(24)" remarks="Пользователь задачи"/>
+            <column name="text" type="text" remarks="Текст"/>
+            <column name="done" type="boolean" remarks="Признак исполнения исполнителем"/>
+            <column name="approved" type="boolean" remarks="Признак подтверждения выполнения задачи"/>
+            <column name="approving_comment" type="varchar(512)" remarks="Комментарий подтверждающего"/>
+            <column name="created" type="datetime" remarks="Дата создания"/>
+            <column name="created_by" type="text" remarks="Кем создано"/>
+            <column name="updated" type="datetime" remarks="Дата обновления"/>
+            <column name="updated_by" type="text" remarks="Кем обновлено"/>
+        </createTable>
+        <createSequence sequenceName="task_id_seq" startValue="1" incrementBy="1"/>
+
+        <createTable tableName="official_weekends" remarks="Актуальные государственные не рабочие дни">
+            <column name="id" type="bigserial">
+                <constraints primaryKey="true" primaryKeyName="pk_off_weekends_id"/>
+            </column>
+            <column name="days" type="jsonb"/>
+            <column name="created" type="datetime" remarks="Дата создания"/>
+            <column name="created_by" type="text" remarks="Кем создано"/>
+            <column name="updated" type="datetime" remarks="Дата обновления"/>
+            <column name="updated_by" type="text" remarks="Кем обновлено"/>
+        </createTable>
+        <createSequence sequenceName="official_weekends_id_seq" startValue="1" incrementBy="1"/>
+
+    </changeSet>
+</databaseChangeLog>

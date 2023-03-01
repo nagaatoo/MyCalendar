@@ -1,0 +1,381 @@
+openapi: 3.0.2
+info:
+  description: API для календаря
+  termsOfService: "/tos"
+  title: MyCalendar API
+  version: 0.0.1
+tags:
+  - name: health
+  - name: calendar
+  - name: schedule
+  - name: organization
+  - name: user
+paths:
+  "/ping":
+    get:
+      responses:
+        '200':
+          description: Сервис доступен
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: pong
+      summary: Проверка доступности сервиса
+      operationId: ping
+      tags:
+        - health
+  "/calendar":
+    get:
+      description: Получить все календари пользователя
+      parameters:
+        - name: pageNo
+          in: query
+          description: Страница
+          schema:
+            type: integer
+        - name: pageSize
+          in: query
+          description: Размер страницы
+          schema:
+            type: integer
+        - name: filter
+          in: query
+          description: Быстрый фильтр
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Список календарей
+          content:
+            application/json:
+              schema:
+                $ref: './model.yaml/#/components/schemas/CalendarList'
+        '400':
+          description: Ошибка запроса
+          content:
+            application/json:
+              schema:
+                $ref: './model.yaml/#/components/schemas/Error'
+    post:
+      description: Создать календарь
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: './model.yaml/#/components/schemas/CalendarCreate'
+      responses:
+        '201':
+          description: Создано
+          content:
+            application/json:
+              schema:
+                $ref: './model.yaml/#/components/schemas/Calendar'
+        '400':
+          description: Ошибка запроса
+          content:
+            application/json:
+              schema:
+                $ref: './model.yaml/#/components/schemas/Error'
+      operationId: calendar
+      tags:
+        - calendar
+  "/calendar/holidays/load":
+    post:
+      responses:
+        '200':
+          description: Обновлено
+        '400':
+          description: Ошибка запроса
+          content:
+            application/json:
+              schema:
+                $ref: './model.yaml/#/components/schemas/Error'
+      tags:
+        - calendar
+  "/calendar/{id}":
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: Идентификатор календаря
+        schema:
+          type: integer
+          format: int64
+    get:
+      responses:
+        '200':
+          description: Календарь
+          content:
+            application/json:
+              schema:
+                $ref: './model.yaml/#/components/schemas/Calendar'
+        '400':
+          description: Ошибка запроса
+          content:
+            application/json:
+              schema:
+                $ref: './model.yaml/#/components/schemas/Error'
+    put:
+      description: Обновить календарь
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: './model.yaml/#/components/schemas/CalendarCreate'
+      responses:
+        '201':
+          description: Создано
+          content:
+            application/json:
+              schema:
+                $ref: './model.yaml/#/components/schemas/Calendar'
+        '400':
+          description: Ошибка запроса
+          content:
+            application/json:
+              schema:
+                $ref: './model.yaml/#/components/schemas/Error'
+      tags:
+        - calendar
+  "/schedule/{calendarId}":
+    description: Расписание
+    get:
+      description: Получить все расписания календаря пользователя
+      parameters:
+        - name: calendarId
+          in: path
+          required: true
+          description: Идентификатор календаря
+          schema:
+            type: integer
+            format: int64
+        - name: pageNo
+          in: query
+          description: Страница
+          schema:
+            type: integer
+        - name: pageSize
+          in: query
+          description: Размер страницы
+          schema:
+            type: integer
+        - name: filter
+          in: query
+          description: Быстрый фильтр
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Список календарей
+          content:
+            application/json:
+              schema:
+                $ref: './model.yaml/#/components/schemas/ScheduleList'
+        '400':
+          description: Ошибка запроса
+          content:
+            application/json:
+              schema:
+                $ref: './model.yaml/#/components/schemas/Error'
+      tags:
+        - schedule
+  "/schedule":
+    description: "Расписание"
+    post:
+      description: Создать календарь
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: './model.yaml/#/components/schemas/ScheduleCreate'
+      responses:
+        '201':
+          description: Создано
+          content:
+            application/json:
+              schema:
+                $ref: './model.yaml/#/components/schemas/Calendar'
+        '400':
+          description: Ошибка запроса
+          content:
+            application/json:
+              schema:
+                $ref: './model.yaml/#/components/schemas/Error'
+    put:
+      description: Обновить календарь
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: './model.yaml/#/components/schemas/ScheduleCreate'
+      responses:
+        '201':
+          description: Создано
+          content:
+            application/json:
+              schema:
+                $ref: './model.yaml/#/components/schemas/Calendar'
+        '400':
+          description: Ошибка запроса
+          content:
+            application/json:
+              schema:
+                $ref: './model.yaml/#/components/schemas/Error'
+      tags:
+        - schedule
+  "/schedule/{scheduleId}/generate":
+    description: "Расписание"
+    post:
+      description: Создать календарь
+      parameters:
+        - name: scheduleId
+          in: path
+          required: true
+          description: Идетификатор расписания
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: './model.yaml/#/components/schemas/ScheduleGenerate'
+      responses:
+        '201':
+          description: Создано
+          content:
+            application/json:
+              schema:
+                $ref: './model.yaml/#/components/schemas/Schedule'
+        '400':
+          description: Ошибка запроса
+          content:
+            application/json:
+              schema:
+                $ref: './model.yaml/#/components/schemas/Error'
+      tags:
+        - schedule
+  "/organization":
+    description: Организации
+    post:
+      description: Создать организацию
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: './model.yaml/#/components/schemas/OrganizationCreate'
+      responses:
+        '201':
+          description: Создано
+          content:
+            application/json:
+              schema:
+                $ref: './model.yaml/#/components/schemas/Organization'
+        '400':
+          description: Ошибка запроса
+          content:
+            application/json:
+              schema:
+                $ref: './model.yaml/#/components/schemas/Error'
+      tags:
+        - organization
+  "/organization/{id}":
+    description: Организации
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: Идентификатор организции
+        schema:
+          type: integer
+          format: int64
+    put:
+      description: Обновить организацию
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: './model.yaml/#/components/schemas/OrganizationCreate'
+      responses:
+        '201':
+          description: ОБновлено
+          content:
+            application/json:
+              schema:
+                $ref: './model.yaml/#/components/schemas/Organization'
+        '400':
+          description: Ошибка запроса
+          content:
+            application/json:
+              schema:
+                $ref: './model.yaml/#/components/schemas/Error'
+      tags:
+        - organization
+  "/user":
+    description: Работа с пользователями
+    post:
+      description: Создать пользователя
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: './model.yaml/#/components/schemas/User'
+      responses:
+        '201':
+          description: Создано
+          content:
+            application/json:
+              schema:
+                $ref: './model.yaml/#/components/schemas/User'
+        '400':
+          description: Ошибка запроса
+          content:
+            application/json:
+              schema:
+                $ref: './model.yaml/#/components/schemas/Error'
+    put:
+      description: Обновить данные учетной записи
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: './model.yaml/#/components/schemas/User'
+      responses:
+        '201':
+          description: Создано
+          content:
+            application/json:
+              schema:
+                $ref: './model.yaml/#/components/schemas/User'
+        '400':
+          description: Ошибка запроса
+          content:
+            application/json:
+              schema:
+                $ref: './model.yaml/#/components/schemas/Error'
+      tags:
+        - user
+  "/user/auth":
+    description: Авторизация
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: './model.yaml/#/components/schemas/UserAuth'
+      responses:
+        '201':
+          description: Создано
+          content:
+            text/plain:
+              schema:
+                type: string
+        '400':
+          description: Ошибка запроса
+          content:
+            application/json:
+              schema:
+                $ref: './model.yaml/#/components/schemas/Error'
+      tags:
+        - user

@@ -91,6 +91,26 @@ components:
     ScheduleGenerate:
       type: object
       properties:
+        workDays:
+          type: integer
+          format: int32
+        weekendDays:
+          type: integer
+          format: int32
+        title:
+          type: string
+        startDate:
+          type: string
+        periodOfSchedule:
+          type: string
+        holidays:
+          type: array
+          items:
+            type: string
+        managers:
+          type: array
+          items:
+            type: string
         users:
           type: array
           items:
@@ -122,9 +142,27 @@ components:
           type: string
           format: date
           description: Дата обновления
-        days:
-          type: string
+        ownerHoliday:
+          type: array
+          description: Выходные дни, установленные владельцем
+          items:
+            type: string
+        schedule:
+          type: array
           description: Сетка расписания
+          items:
+            $ref: '#/components/schemas/ScheduleElement'
+    ScheduleElement:
+      type: object
+      properties:
+        user:
+          type: string
+          description: Пользователь, член команды
+        schedule:
+          type: array
+          items:
+            type: string
+            format: date
     ScheduleShort:
       type: object
       properties:

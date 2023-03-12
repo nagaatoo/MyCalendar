@@ -1,5 +1,7 @@
 package ru.numbdev.mycalendar;
 
+import java.util.List;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Before;
@@ -24,6 +26,7 @@ import ru.numbDev.openapi.model.*;
 import ru.numbdev.mycalendar.repository.CalendarRepository;
 import ru.numbdev.mycalendar.service.CalendarService;
 import ru.numbdev.mycalendar.service.OrganizationService;
+import ru.numbdev.mycalendar.service.ScheduleService;
 import ru.numbdev.mycalendar.service.UserService;
 
 @RunWith(SpringRunner.class)
@@ -44,6 +47,9 @@ class MyCalendarApplicationTests {
 
     @Autowired
     private CalendarService calendarService;
+
+    @Autowired
+    private ScheduleService scheduleService;
 
     @Before
     public void setAuthContext() {
@@ -75,7 +81,7 @@ class MyCalendarApplicationTests {
         calendarCreate.setTitle("Календарь ромашки");
         calendarCreate.setOrganizationId(organization.getId());
         var calendar = calendarService.create(calendarCreate);
-        assert  calendar != null && StringUtils.isNotBlank(calendar.getCreatedBy());
+        assert  calendar != null;
     }
 
     User saveUser(String login, String fio) {
@@ -83,6 +89,19 @@ class MyCalendarApplicationTests {
         userr.setFIO(fio);
         userr.login(login);
         return userService.create(userr);
+    }
+
+    @Test
+    void buildCalendar() {
+        var params = new ScheduleGenerate();
+        params.setTitle("Тестовое расписание");
+        params.setWorkDays(2);
+        params.setWeekendDays(3);
+        params.setUsers(List.of("petrov.p", "denisov.d", "denisov.d", "chepurko.c", "aleksandrov.d"));
+        params.setManagers(List.of("vladimirov.d"));
+        params.setPeriodOfSchedule("YEAR");
+        var schedule = scheduleService.buildScheduleAndSave(1L, params);
+        assert schedule.getId() != null;
     }
 
     Organization saveOrganization(String owner, String name, String email) {

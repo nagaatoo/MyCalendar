@@ -107,6 +107,7 @@ components:
           type: array
           items:
             type: string
+            format: date
         managers:
           type: array
           items:
@@ -147,6 +148,7 @@ components:
           description: Выходные дни, установленные владельцем
           items:
             type: string
+            format: date
         schedule:
           type: array
           description: Сетка расписания

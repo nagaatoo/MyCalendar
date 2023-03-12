@@ -2,6 +2,9 @@ server:
   port: 8888
 
 spring:
+#  sql:
+#    init:
+#      data-locations: data-local.sql
   datasource:
     url: jdbc:postgresql://localhost:5432/calendar
     username: admin
@@ -27,5 +30,5 @@ spring:
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.xml
     enabled: true
-    drop-first: false
+    drop-first: true
     default-schema: public

@@ -25,11 +25,8 @@ import ru.numbdev.mycalendar.repository.TeamRepository;
 import ru.numbdev.mycalendar.repository.WeekendsRepository;
 
 import java.time.LocalDate;
-import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Deque;
 import java.util.List;
-import java.util.Queue;
 import java.util.stream.Collectors;
 
 @Service
@@ -46,7 +43,6 @@ public class ScheduleService {
 
     @Transactional
     public Schedule buildScheduleAndSave(Long calendarId, ScheduleGenerate data) {
-        // TODO протестировать
         var calendar = calendarRepository
                 .findById(calendarId)
                 .orElseThrow(() -> ExceptionFunctions.ENTITY_NOT_FOUND.apply(calendarId));
@@ -58,53 +54,58 @@ public class ScheduleService {
         var schedule = scheduleGenerateMapper.dtoToDomain(data);
         schedule.setDays(buildSchedule(data));
 
-        saveTeam(calendar, schedule, data);
-        return scheduleGenerateResultMapper.domainToDto(scheduleRepository.save(schedule));
+        var savedSchedule = scheduleRepository.save(schedule);
+        saveTeam(calendar, savedSchedule, data);
+        return scheduleGenerateResultMapper.domainToDto(savedSchedule);
     }
 
     private ScheduleDaysDTO buildSchedule(ScheduleGenerate data) {
-        var ownerHolidays = data.getHolidays().stream().map(this::parseSingleDate).collect(Collectors.toList());
+        var ownerHolidays = data.getHolidays();
         List<ScheduleUserDaysDTO> schedule = new ArrayList<>();
         ScheduleDaysDTO days = new ScheduleDaysDTO(schedule, ownerHolidays);
 
         LocalDate beginDate = getBeginDate(data.getStartDate());
         LocalDate incrementDate = getBeginDate(data.getStartDate());
 
-        Deque queue = new ArrayDeque(data.getUsers());
         for (String user : data.getUsers()) {
             schedule.add(new ScheduleUserDaysDTO(user, new ArrayList<>()));
         }
 
-        while (periodCheck(beginDate, incrementDate, PeriodOfSchedule.getPeriod(data.getPeriodOfSchedule()))) {
+        int order = 0;
+        boolean hasNext = true;
+        while (hasNext) {
             if (!CollectionUtils.isEmpty(ownerHolidays) && ownerHolidays.contains(incrementDate)) {
                 continue;
             }
 
-            var user = queue.peek();
-            schedule
-                    .stream()
-                    .filter(s -> s.user().equals(user))
-                    .findFirst()
-                    .get()
-                    .workDays()
-                    .add(incrementDate);
-            incrementDate = incrementDate.plusDays(1);
+            var userSchedule = schedule.get(order++);
+            if (order == schedule.size()) {
+                order = 0;
+            }
+            for (int workCount = 0; workCount <= data.getWorkDays(); workCount++) {
+                userSchedule.workDays().add(incrementDate);
+                incrementDate = incrementDate.plusDays(1);
+                hasNext = hasNext(beginDate, incrementDate, PeriodOfSchedule.getPeriod(data.getPeriodOfSchedule()));
+                if (!hasNext) {
+                    break;
+                }
+            }
         }
 
         return days;
     }
 
-    private boolean periodCheck(LocalDate begin, LocalDate iteration, PeriodOfSchedule period) {
+    private boolean hasNext(LocalDate begin, LocalDate iteration, PeriodOfSchedule period) {
         if (period == PeriodOfSchedule.YEAR) {
-            return iteration != begin.plusYears(1);
+            return !iteration.equals(begin.plusYears(1));
         }
 
         if (period == PeriodOfSchedule.HALF_YEAR) {
-            return iteration != begin.plusMonths(6);
+            return !iteration.equals(begin.plusMonths(6));
         }
 
         if (period == PeriodOfSchedule.MONTH) {
-            return iteration != begin.plusMonths(1);
+            return !iteration.equals(begin.plusMonths(1));
         }
 
         throw new UnsupportedOperationException();

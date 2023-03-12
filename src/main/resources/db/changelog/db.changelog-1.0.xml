@@ -140,4 +140,12 @@
         <createSequence sequenceName="official_weekends_id_seq" startValue="1" incrementBy="1"/>
 
     </changeSet>
+
+    <changeSet id="init-data" author="e.khodosov">
+<!--        <preConditions onFail="HALT">-->
+<!--            <sqlCheck expectedResult="0">select count(1) from users</sqlCheck>-->
+<!--        </preConditions>-->
+        <sqlFile path="classpath:db/changelog/data-local.sql" />
+    </changeSet>
+
 </databaseChangeLog>

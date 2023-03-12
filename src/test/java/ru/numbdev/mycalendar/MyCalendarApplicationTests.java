@@ -22,6 +22,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.util.CollectionUtils;
 import ru.numbDev.openapi.model.*;
 import ru.numbdev.mycalendar.repository.CalendarRepository;
 import ru.numbdev.mycalendar.service.CalendarService;
@@ -96,12 +97,23 @@ class MyCalendarApplicationTests {
         var params = new ScheduleGenerate();
         params.setTitle("Тестовое расписание");
         params.setWorkDays(2);
-        params.setWeekendDays(3);
         params.setUsers(List.of("petrov.p", "denisov.d", "denisov.d", "chepurko.c", "aleksandrov.d"));
         params.setManagers(List.of("vladimirov.d"));
         params.setPeriodOfSchedule("YEAR");
         var schedule = scheduleService.buildScheduleAndSave(1L, params);
-        assert schedule.getId() != null;
+        Long id = schedule.getId();
+        assert id != null;
+
+        var get = scheduleService.getById(id);
+        assert get.getId() != null;
+
+        scheduleService.removeSchedule(id);
+        try {
+            scheduleService.getById(id);
+            assert false;
+        } catch (Exception e) {
+            assert true;
+        }
     }
 
     Organization saveOrganization(String owner, String name, String email) {

@@ -224,6 +224,64 @@ paths:
                 $ref: './model.yaml/#/components/schemas/Error'
       tags:
         - schedule
+  "/schedule/{id}":
+    description: "Расписание"
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: Идентификатор расписания
+        schema:
+          type: integer
+          format: int64
+    put:
+      description: Обновить расписание
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: './model.yaml/#/components/schemas/ScheduleCreate'
+      responses:
+        '201':
+          description: Создано
+          content:
+            application/json:
+              schema:
+                $ref: './model.yaml/#/components/schemas/Schedule'
+        '400':
+          description: Ошибка запроса
+          content:
+            application/json:
+              schema:
+                $ref: './model.yaml/#/components/schemas/Error'
+    get:
+      description: Получить расписание
+      responses:
+        '200':
+          description: Создано
+          content:
+            application/json:
+              schema:
+                $ref: './model.yaml/#/components/schemas/Schedule'
+        '400':
+          description: Ошибка запроса
+          content:
+            application/json:
+              schema:
+                $ref: './model.yaml/#/components/schemas/Error'
+    delete:
+      description: Удалить расписание
+      responses:
+        '200':
+          description: Удалено
+        '400':
+          description: Ошибка запроса
+          content:
+            application/json:
+              schema:
+                $ref: './model.yaml/#/components/schemas/Error'
+      tags:
+        - schedule
   "/schedule/{scheduleId}/generate":
     description: "Расписание"
     post:

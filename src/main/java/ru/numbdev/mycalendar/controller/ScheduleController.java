@@ -1,6 +1,7 @@
 package ru.numbdev.mycalendar.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import ru.numbDev.openapi.api.ScheduleApi;
@@ -29,8 +30,19 @@ public class ScheduleController implements ScheduleApi {
     }
 
     @Override
-    public ResponseEntity<Calendar> schedulePut(ScheduleCreate scheduleCreate) {
-        return ScheduleApi.super.schedulePut(scheduleCreate);
+    public ResponseEntity<Schedule> scheduleIdPut(Long id, ScheduleCreate scheduleCreate) {
+        return ResponseEntity.ok(scheduleService.update(id, scheduleCreate));
+    }
+
+    @Override
+    public ResponseEntity<Void> scheduleIdDelete(Long id) {
+        scheduleService.removeSchedule(id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<Schedule> scheduleIdGet(Long id) {
+        return ResponseEntity.ok(scheduleService.getById(id));
     }
 
     @Override

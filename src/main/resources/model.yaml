@@ -81,22 +81,28 @@ components:
         weekendDays:
           type: integer
           description: Диапазон не рабочих дней
-        days:
+        title:
           type: string
-          description: json с расписанием
-        users:
+          description: Название
+        ownerHoliday:
           type: array
+          description: Выходные дни, установленные владельцем
           items:
             type: string
+            format: date
+        schedule:
+          type: array
+          description: Сетка расписания
+          items:
+            $ref: '#/components/schemas/ScheduleElement'
     ScheduleGenerate:
       type: object
       properties:
         workDays:
           type: integer
           format: int32
-        weekendDays:
-          type: integer
-          format: int32
+        withOfficialHolidays:
+          type: boolean
         title:
           type: string
         startDate:
@@ -160,7 +166,7 @@ components:
         user:
           type: string
           description: Пользователь, член команды
-        schedule:
+        workDays:
           type: array
           items:
             type: string

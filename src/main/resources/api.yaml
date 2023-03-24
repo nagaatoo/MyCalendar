@@ -29,21 +29,11 @@ paths:
     get:
       description: Получить все календари пользователя
       parameters:
-        - name: pageNo
+        - name: params
           in: query
-          description: Страница
+          description: Параметры паринации и фильтрации
           schema:
-            type: integer
-        - name: pageSize
-          in: query
-          description: Размер страницы
-          schema:
-            type: integer
-        - name: filter
-          in: query
-          description: Быстрый фильтр
-          schema:
-            type: string
+            $ref: './model.yaml/#/components/schemas/Pagable'
       responses:
         '200':
           description: Список календарей

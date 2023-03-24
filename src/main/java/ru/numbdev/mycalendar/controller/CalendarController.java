@@ -10,6 +10,7 @@ import ru.numbDev.openapi.api.CalendarApi;
 import ru.numbDev.openapi.model.Calendar;
 import ru.numbDev.openapi.model.CalendarCreate;
 import ru.numbDev.openapi.model.CalendarList;
+import ru.numbDev.openapi.model.Pagable;
 import ru.numbdev.mycalendar.service.CalendarService;
 import ru.numbdev.mycalendar.utils.Utils;
 
@@ -35,8 +36,8 @@ public class CalendarController implements CalendarApi {
     }
 
     @Override
-    public ResponseEntity<CalendarList> calendarGet(Integer pageNo, Integer pageSize, String filter) {
-        return ResponseEntity.ok(calendarService.getList(Utils.getUsername(), filter, pageNo, pageSize));
+    public ResponseEntity<CalendarList> calendarGet(Pagable params) {
+        return ResponseEntity.ok(calendarService.getList(Utils.getUsername(), params));
     }
 
     @Override

@@ -30,6 +30,32 @@ components:
         middleName:
           type: string
           description: Отчество
+    Pagable:
+      type: object
+      description: Параметры пагинации и фильтрации
+      properties:
+        pageNo:
+          type: integer
+          format: int32
+          description: Страница
+        pageSize:
+          type: integer
+          format: int32
+          description: Размер страницы
+        direction:
+          type: string
+          description: Направление
+        offset:
+          type: integer
+          format: int32
+          description: Указатель на страницу
+        limit:
+          type: integer
+          format: int32
+          description: Размер страницы
+        filter:
+          description: Быстрый фильтр
+          type: string
     User:
       type: object
       description: Метаданные пользователя
@@ -274,7 +300,9 @@ components:
           format: int64
           description: Общее количество календарей
         calendars:
-          $ref: '#/components/schemas/CalendarShort'
+          type: array
+          items:
+            $ref: '#/components/schemas/CalendarShort'
     Error:
       type: object
       properties:

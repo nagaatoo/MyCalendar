@@ -1,7 +1,8 @@
 package ru.numbdev.mycalendar.repository;
 
-import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import ru.numbdev.mycalendar.model.entity.CalendarEntity;
 
-public interface CalendarRepository extends PagingAndSortingRepository<CalendarEntity, Long> {
+public interface CalendarRepository extends JpaRepository<CalendarEntity, Long>, JpaSpecificationExecutor<CalendarEntity> {
 }

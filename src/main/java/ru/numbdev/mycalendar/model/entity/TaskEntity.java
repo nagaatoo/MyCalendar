@@ -1,6 +1,7 @@
 package ru.numbdev.mycalendar.model.entity;
 
 import lombok.*;
+import lombok.experimental.Accessors;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -15,6 +16,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 @Entity
+@Accessors(chain = true)
 @Table(name = "task")
 public class TaskEntity {
     @Id
@@ -31,7 +33,7 @@ public class TaskEntity {
     private String userControl;
     private Boolean approved;
     private String approvingComment;
-    private LocalDateTime date;
+    private LocalDateTime approveDate;
     private LocalDateTime deadline;
     private LocalDateTime completeDate;
 

@@ -333,6 +333,10 @@ components:
           type: string
           format: date
           description: Срок
+        approveTask:
+          type: string
+          format: date
+          description: Дата проверки
         completeTask:
           type: string
           format: date
@@ -368,10 +372,6 @@ components:
         userControl:
           type: string
           description: Проверяющий
-        date:
-          type: string
-          format: date
-          description: Дата задачи
         deadline:
           type: string
           format: date
@@ -398,6 +398,9 @@ components:
       type: object
       description: Параметры завершенной задачи
       properties:
+        done:
+          type: boolean
+          description: Признак выполненной задачи
         completeText:
           type: string
           description: Результат

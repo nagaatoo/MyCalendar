@@ -115,17 +115,37 @@
                 <constraints primaryKey="true" primaryKeyName="pk_task_id"/>
             </column>
             <column name="personal" type="boolean" remarks="Признак личной задачи"/>
-            <column name="user_login" type="varchar(24)" remarks="Пользователь задачи"/>
-            <column name="text" type="text" remarks="Текст"/>
+            <column name="order" type="int" remarks="Очередность"/>
+            <column name="user_login" type="varchar(24)" remarks="Исполнитель"/>
+            <column name="user_control" type="varchar(24)" remarks="Проверяющий"/>
+            <column name="text" type="text" remarks="Текст задачи"/>
+            <column name="complete_text" type="text" remarks="Результат"/>
             <column name="done" type="boolean" remarks="Признак исполнения исполнителем"/>
             <column name="approved" type="boolean" remarks="Признак подтверждения выполнения задачи"/>
             <column name="approving_comment" type="varchar(512)" remarks="Комментарий подтверждающего"/>
+            <column name="date" type="datetime" remarks="Дата задачи"/>
+            <column name="deadline" type="datetime" remarks="Срок задачи"/>
+            <column name="complete_date" type="datetime" remarks="Дата завершения задачи" />
+            <column name="group_uuid" type="varchar(36)" remarks="Идентификатор группы" />
+            <column name="calendar_id" type="bigserial" remarks="Целевой календарь" />
+            <column name="schedule_id" type="bigserial" remarks="Целевое расписание" />
             <column name="created" type="datetime" remarks="Дата создания"/>
             <column name="created_by" type="text" remarks="Кем создано"/>
             <column name="updated" type="datetime" remarks="Дата обновления"/>
             <column name="updated_by" type="text" remarks="Кем обновлено"/>
         </createTable>
         <createSequence sequenceName="task_id_seq" startValue="1" incrementBy="1"/>
+        <addForeignKeyConstraint baseTableName="task" baseColumnNames="calendar_id"
+                                 referencedTableName="calendar" referencedColumnNames="id"
+                                 onDelete="NO ACTION"
+                                 constraintName="fk_task_calendar"/>
+        <addForeignKeyConstraint baseTableName="task" baseColumnNames="schedule_id"
+                                 referencedTableName="schedule" referencedColumnNames="id"
+                                 onDelete="NO ACTION"
+                                 constraintName="fk_task_schedule"/>
+        <createIndex tableName="task" indexName="task_calendar_id_idx">
+            <column name="calendar_id" type="bigserial"/>
+        </createIndex>
 
         <createTable tableName="official_weekends" remarks="Актуальные государственные не рабочие дни">
             <column name="id" type="bigserial">

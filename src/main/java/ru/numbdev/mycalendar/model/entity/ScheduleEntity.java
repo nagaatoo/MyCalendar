@@ -15,6 +15,8 @@ import ru.numbdev.mycalendar.model.dto.ScheduleDaysDTO;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -43,4 +45,7 @@ public class ScheduleEntity {
     @LastModifiedDate
     private LocalDateTime updated;
 
+    @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "schedule")
+    @ToString.Exclude
+    private List<TaskEntity> tasks = new ArrayList<>();
 }

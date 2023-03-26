@@ -10,6 +10,7 @@ tags:
   - name: schedule
   - name: organization
   - name: user
+  - name: task
 paths:
   "/ping":
     get:
@@ -427,3 +428,102 @@ paths:
                 $ref: './model.yaml/#/components/schemas/Error'
       tags:
         - user
+  "/task":
+    description: Задачи
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: './model.yaml/#/components/schemas/TaskCreate'
+      responses:
+        '201':
+          description: Создано
+          content:
+            application/json:
+              schema:
+                $ref: './model.yaml/#/components/schemas/Task'
+        '400':
+          description: Ошибка запроса
+          content:
+            application/json:
+              schema:
+                $ref: './model.yaml/#/components/schemas/Error'
+      tags:
+        - task
+  "/task/{taskId}":
+    description: Задачи
+    parameters:
+      - name: taskId
+        in: path
+        required: true
+        description: Идентификатор задачи
+        schema:
+          type: integer
+          format: int64
+    delete:
+      responses:
+        '200':
+          description: Удалено
+        '400':
+          description: Ошибка запроса
+          content:
+            application/json:
+              schema:
+                $ref: './model.yaml/#/components/schemas/Error'
+      tags:
+        - task
+  "/task/{taskId}/complete":
+    description: Завершить задачу
+    parameters:
+      - name: taskId
+        in: path
+        required: true
+        description: Идентификатор задачи
+        schema:
+          type: integer
+          format: int64
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: './model.yaml/#/components/schemas/TaskComplete'
+      responses:
+        '200':
+          description: Завершено
+        '400':
+          description: Ошибка запроса
+          content:
+            application/json:
+              schema:
+                $ref: './model.yaml/#/components/schemas/Error'
+      tags:
+        - task
+  "/task/{taskId}/approve":
+    description: Утвердить задачу
+    parameters:
+      - name: taskId
+        in: path
+        required: true
+        description: Идентификатор задачи
+        schema:
+          type: integer
+          format: int64
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: './model.yaml/#/components/schemas/TaskApprove'
+      responses:
+        '200':
+          description: Утверждено
+        '400':
+          description: Ошибка запроса
+          content:
+            application/json:
+              schema:
+                $ref: './model.yaml/#/components/schemas/Error'
+      tags:
+        - task

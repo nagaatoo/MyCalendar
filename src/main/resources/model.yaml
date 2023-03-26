@@ -303,6 +303,114 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/CalendarShort'
+    Task:
+      type: object
+      description: Задача
+      properties:
+        text:
+          type: string
+          description: Описание
+        done:
+          type: boolean
+          description: Завершена
+        userLogin:
+          type: string
+          description: Исполнитель
+        userControl:
+          type: string
+          description: Проверяющий
+        approved:
+          type: boolean
+          description: Проверяющий проверил задачу
+        approvingComment:
+          type: string
+          description: Комментарий проверяющего
+        date:
+          type: string
+          format: date
+          description: Дата задачи
+        deadline:
+          type: string
+          format: date
+          description: Срок
+        completeTask:
+          type: string
+          format: date
+          description: Дата завершения
+        order:
+          type: integer
+          format: int32
+          description: Очередность в группе
+        createdBy:
+          type: string
+          description: Создатель
+        created:
+          type: string
+          format: date
+          description: Дата создания
+        updatedBy:
+          type: string
+          description: Обновлено
+        update:
+          type: string
+          format: date
+          description: Дата обновления
+    TaskCreate:
+      type: object
+      description: Задача
+      properties:
+        text:
+          type: string
+          description: Описание
+        userLogin:
+          type: string
+          description: Исполнитель
+        userControl:
+          type: string
+          description: Проверяющий
+        date:
+          type: string
+          format: date
+          description: Дата задачи
+        deadline:
+          type: string
+          format: date
+          description: Срок
+        groupUuid:
+          type: string
+          description: id группы
+        order:
+          type: integer
+          format: int32
+          description: Очередность в группе
+        personal:
+          type: boolean
+          description: Личная задача
+        calendarId:
+          type: integer
+          format: int64
+          description: id календаря
+        scheduleId:
+          type: integer
+          format: int64
+          description: id расписания
+    TaskComplete:
+      type: object
+      description: Параметры завершенной задачи
+      properties:
+        completeText:
+          type: string
+          description: Результат
+    TaskApprove:
+      type: object
+      description: Параметры проверки задачи
+      properties:
+        approved:
+          type: boolean
+          description: Проверяющий проверил задачу
+        approvingComment:
+          type: string
+          description: Комментарий проверяющего
     Error:
       type: object
       properties:

@@ -5,11 +5,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
-import ru.numbDev.openapi.model.Schedule;
-import ru.numbDev.openapi.model.ScheduleCreate;
-import ru.numbDev.openapi.model.ScheduleElement;
-import ru.numbDev.openapi.model.ScheduleGenerate;
+import ru.numbDev.openapi.model.*;
 import ru.numbdev.mycalendar.exception.ExceptionFunctions;
+import ru.numbdev.mycalendar.mapper.ScheduleCreateMapper;
 import ru.numbdev.mycalendar.mapper.ScheduleGenerateMapper;
 import ru.numbdev.mycalendar.mapper.ScheduleGenerateResultMapper;
 import ru.numbdev.mycalendar.model.dto.PeriodOfSchedule;
@@ -18,11 +16,8 @@ import ru.numbdev.mycalendar.model.entity.CalendarEntity;
 import ru.numbdev.mycalendar.model.entity.ScheduleEntity;
 import ru.numbdev.mycalendar.model.entity.TeamEntity;
 import ru.numbdev.mycalendar.model.enums.Role;
-import ru.numbdev.mycalendar.repository.CalendarRepository;
-import ru.numbdev.mycalendar.repository.OfficialWeekendRepository;
-import ru.numbdev.mycalendar.repository.ScheduleRepository;
-import ru.numbdev.mycalendar.repository.TeamRepository;
-import ru.numbdev.mycalendar.repository.WeekendsRepository;
+import ru.numbdev.mycalendar.repository.*;
+import ru.numbdev.mycalendar.utils.Utils;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -36,10 +31,41 @@ public class ScheduleService {
     private final OfficialWeekendRepository officialWeekendRepository;
     private final WeekendsRepository weekendsRepository;
     private final ScheduleRepository scheduleRepository;
+    private final UserRepository userRepository;
     private final TeamRepository teamRepository;
     private final CalendarRepository calendarRepository;
     private final ScheduleGenerateMapper scheduleGenerateMapper;
     private final ScheduleGenerateResultMapper scheduleGenerateResultMapper;
+    private final ScheduleCreateMapper scheduleCreateMapper;
+
+    @Transactional
+    public Schedule create(Long calendarId, ScheduleCreate scheduleCreate) {
+        var calendar = calendarRepository
+                .findById(calendarId)
+                .orElseThrow(() -> ExceptionFunctions.ENTITY_NOT_FOUND.apply(calendarId));
+        var schedule = scheduleCreateMapper.dtoToDomain(scheduleCreate);
+        var savedSchedule = scheduleRepository.save(schedule);
+
+        teamRepository.save(
+                TeamEntity
+                        .builder()
+                        .schedule(savedSchedule)
+                        .calendar(calendar)
+                        .userLogin(Utils.getUsername())
+                        .role(Role.OWNER)
+                        .build()
+        );
+        return scheduleGenerateResultMapper.domainToDto(savedSchedule);
+    }
+
+    @Transactional
+    public Schedule update(Long id, ScheduleCreate scheduleForUpdate) {
+        var schedule = scheduleRepository.findById(id).orElseThrow(() -> ExceptionFunctions.ENTITY_NOT_FOUND.apply(id));
+        schedule.setDays(parseAndCheckSchedule(scheduleForUpdate));
+        schedule.setTitle(scheduleForUpdate.getTitle());
+        schedule.setWorkDays(schedule.getWorkDays());
+        return scheduleGenerateResultMapper.domainToDto(scheduleRepository.save(schedule));
+    }
 
     @Transactional
     public Schedule buildScheduleAndSave(Long calendarId, ScheduleGenerate data) {
@@ -175,15 +201,6 @@ public class ScheduleService {
         }
     }
 
-    @Transactional
-    public Schedule update(Long id, ScheduleCreate scheduleForUpdate) {
-        var schedule = scheduleRepository.findById(id).orElseThrow(() -> ExceptionFunctions.ENTITY_NOT_FOUND.apply(id));
-        schedule.setDays(parseAndCheckSchedule(scheduleForUpdate));
-        schedule.setTitle(scheduleForUpdate.getTitle());
-        schedule.setWorkDays(schedule.getWorkDays());
-        return scheduleGenerateResultMapper.domainToDto(scheduleRepository.save(schedule));
-    }
-
     private ScheduleDaysDTO parseAndCheckSchedule(ScheduleCreate scheduleForUpdate) {
         ScheduleDaysDTO result = new ScheduleDaysDTO(scheduleForUpdate.getSchedule(), scheduleForUpdate.getOwnerHoliday());
 
@@ -218,4 +235,8 @@ public class ScheduleService {
         scheduleRepository.deleteById(id);
     }
 
+    @Transactional
+    public ScheduleList getSchedules(Long calendarId, Integer pageNo, Integer pageSize, String filter) {
+        return null;
+    }
 }

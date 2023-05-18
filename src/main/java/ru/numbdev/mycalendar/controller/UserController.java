@@ -16,17 +16,17 @@ public class UserController implements UserApi {
     private final UserService userService;
 
     @Override
-    public ResponseEntity<String> userAuthPost(UserAuth userAuth) {
+    public ResponseEntity<String> auth(UserAuth userAuth) {
         return ResponseEntity.ok(userService.getToken(userAuth));
     }
 
     @Override
-    public ResponseEntity<User> userPost(User user) {
-        return ResponseEntity.ok(userService.create(user));
+    public ResponseEntity<User> updateUser(User user) {
+        return ResponseEntity.ok(userService.update(Utils.getUsername(), user));
     }
 
     @Override
-    public ResponseEntity<User> userPut(User user) {
-        return ResponseEntity.ok(userService.update(Utils.getUsername(), user));
+    public ResponseEntity<User> createUser(User user) {
+        return ResponseEntity.ok(userService.create(user));
     }
 }

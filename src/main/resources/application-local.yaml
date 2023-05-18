@@ -2,9 +2,9 @@ server:
   port: 8888
 
 spring:
-#  sql:
-#    init:
-#      data-locations: data-local.sql
+  sql:
+    init:
+      data-locations: data-local.sql
   datasource:
     url: jdbc:postgresql://localhost:5432/calendar
     username: admin
@@ -17,8 +17,8 @@ spring:
       idle-timeout: 10000
       max-lifetime: 1000
       auto-commit: true
+
   jpa:
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
     database: POSTGRESQL
     show-sql: false
     open-in-view: false

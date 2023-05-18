@@ -48,17 +48,21 @@ public class CalendarService {
     private final OfficialWeekendRepository officialWeekendRepository;
 
     @Transactional
-    public void uploadHolidays() throws JsonProcessingException {
-        var holidayResult = new RestTemplate().getForEntity(holidayUrl, String.class);
-        if (holidayResult.getStatusCode() != HttpStatus.OK) {
-            return;
-        }
-        var mapped = new ObjectMapper().readValue(holidayResult.getBody(), WeekendsDaysDTO.class);
-        if (CollectionUtils.isEmpty(mapped.holidays())) {
-            return;
-        }
+    public void uploadHolidays() {
+        try {
+            var holidayResult = new RestTemplate().getForEntity(holidayUrl, String.class);
+            if (holidayResult.getStatusCode() != HttpStatus.OK) {
+                return;
+            }
+            var mapped = new ObjectMapper().readValue(holidayResult.getBody(), WeekendsDaysDTO.class);
+            if (CollectionUtils.isEmpty(mapped.holidays())) {
+                return;
+            }
 
-        officialWeekendRepository.save(OfficialWeekendsEntity.builder().days(mapped).build());
+            officialWeekendRepository.save(OfficialWeekendsEntity.builder().days(mapped).build());
+        } catch (Exception e) {
+            throw ExceptionFunctions.INNER_EX.apply(e.getMessage());
+        }
     }
 
     @Transactional

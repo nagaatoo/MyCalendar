@@ -1,0 +1,10 @@
+{
+    "library": "spring-boot",
+    "interfaceOnly": "true",
+    "dateLibrary": "java8",
+    "hideGenerationTimestamp": "false",
+    "useTags": "true",
+    "openApiNullable": false,
+    "skipDefaultInterface": true,
+    "sortParamsByRequiredFlag": false
+}

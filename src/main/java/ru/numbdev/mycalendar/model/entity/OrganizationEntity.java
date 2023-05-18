@@ -40,6 +40,7 @@ public class OrganizationEntity {
     private String name;
     private String email;
     private String ownerLogin;
+    private boolean deleted;
     @CreatedBy
     private String createdBy;
     @CreatedDate

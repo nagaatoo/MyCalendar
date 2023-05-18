@@ -16,13 +16,12 @@ public class OrganizationController implements OrganizationApi {
     private final OrganizationService organizationService;
 
     @Override
-    public ResponseEntity<Organization> organizationPost(OrganizationCreate organizationCreate) {
+    public ResponseEntity<Organization> createOrganization(OrganizationCreate organizationCreate) {
         return ResponseEntity.ok(organizationService.create(Utils.getUsername(), organizationCreate));
     }
 
     @Override
-    public ResponseEntity<Organization> organizationIdPut(Long id, OrganizationCreate organizationCreate) {
+    public ResponseEntity<Organization> updateOrganization(Long id, OrganizationCreate organizationCreate) {
         return ResponseEntity.ok(organizationService.update(id, organizationCreate));
     }
-
 }

@@ -2,7 +2,6 @@ package ru.numbdev.mycalendar.controller;
 
 
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,34 +19,27 @@ public class CalendarController implements CalendarApi {
 
     private final CalendarService calendarService;
 
-    @SneakyThrows
     @Override
-    public ResponseEntity<Void> calendarHolidaysLoadPost() {
+    public ResponseEntity<Calendar> createCalendar(CalendarCreate calendarCreate) {
+        if (StringUtils.isBlank(calendarCreate.getOwnerLogin())) {
+            calendarCreate.setOwnerLogin(Utils.getUsername());
+        }
+        return ResponseEntity.ok(calendarService.create(calendarCreate));
+    }
+
+    @Override
+    public ResponseEntity<CalendarList> getCalendars(Pagable params) {
+        return ResponseEntity.ok(calendarService.getList(Utils.getUsername(), params));
+    }
+
+    @Override
+    public ResponseEntity<Void> loadHolidays() {
         calendarService.uploadHolidays();
         return ResponseEntity.ok(null);
     }
 
     @Override
-    public ResponseEntity<Calendar> calendar(CalendarCreate calendar) {
-        if (StringUtils.isBlank(calendar.getOwnerLogin())) {
-            calendar.setOwnerLogin(Utils.getUsername());
-        }
-        return ResponseEntity.ok(calendarService.create(calendar));
+    public ResponseEntity<Calendar> updateCalendar(Long id, CalendarCreate calendarCreate) {
+        return ResponseEntity.ok(calendarService.update(id, calendarCreate));
     }
-
-    @Override
-    public ResponseEntity<CalendarList> calendarGet(Pagable params) {
-        return ResponseEntity.ok(calendarService.getList(Utils.getUsername(), params));
-    }
-
-    @Override
-    public ResponseEntity<Calendar> calendarIdGet(Long id) {
-        return ResponseEntity.ok(calendarService.getById(id));
-    }
-
-    @Override
-    public ResponseEntity<Calendar> calendarIdPut(Long id, CalendarCreate calendar) {
-        return ResponseEntity.ok(calendarService.update(id, calendar));
-    }
-
 }

@@ -1,0 +1,1 @@
+java -jar openapi-generator-cli.jar generate -i ./src/main/resources/api.yaml -c config-spring-server.json -g spring -o ./../openapi/out -psourceFolder=''  -papiPackage='ru.numbDev.openapi.api' -pmodelPackage='ru.numbDev.openapi.model' --global-property models,apis

@@ -34,6 +34,7 @@
             <column name="created_by" type="text" remarks="Кем создано"/>
             <column name="updated" type="datetime" remarks="Дата обновления"/>
             <column name="updated_by" type="text" remarks="Кем обновлено"/>
+            <column name="deleted" type="boolean" remarks="Организация удалена"/>
         </createTable>
         <createSequence sequenceName="organization_id_seq" startValue="1" incrementBy="1"/>
         

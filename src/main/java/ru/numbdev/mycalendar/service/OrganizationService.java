@@ -8,6 +8,7 @@ import ru.numbDev.openapi.model.OrganizationCreate;
 import ru.numbdev.mycalendar.exception.ExceptionFunctions;
 import ru.numbdev.mycalendar.mapper.OrganizationCreateMapper;
 import ru.numbdev.mycalendar.mapper.OrganizationMapper;
+import ru.numbdev.mycalendar.model.entity.OrganizationEntity;
 import ru.numbdev.mycalendar.repository.OrganizationRepository;
 
 
@@ -28,8 +29,19 @@ public class OrganizationService {
 
     @Transactional
     public Organization update(Long id, OrganizationCreate organization) {
-        var entity = organizationRepository.findById(id).orElseThrow(() -> ExceptionFunctions.ENTITY_NOT_FOUND.apply(id));
+        var entity = getOrganization(id);
         organizationCreateMapper.fillDto(organization, entity);
         return organizationMapper.domainToDto(organizationRepository.save(entity));
+    }
+
+    @Transactional
+    public void delete(Long id) {
+        var entity = getOrganization(id);
+        entity.setDeleted(true);
+        organizationRepository.save(entity);
+    }
+
+    private OrganizationEntity getOrganization(Long id) {
+        return organizationRepository.findById(id).orElseThrow(() -> ExceptionFunctions.ENTITY_NOT_FOUND.apply(id));
     }
 }

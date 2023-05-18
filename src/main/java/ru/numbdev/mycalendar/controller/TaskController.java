@@ -10,7 +10,6 @@ import ru.numbDev.openapi.model.TaskApprove;
 import ru.numbDev.openapi.model.TaskComplete;
 import ru.numbDev.openapi.model.TaskCreate;
 import ru.numbdev.mycalendar.service.TaskService;
-import ru.numbdev.mycalendar.utils.Utils;
 
 @RestController
 @RequiredArgsConstructor
@@ -19,28 +18,29 @@ public class TaskController implements TaskApi {
     private final TaskService taskService;
 
     @Override
-    public ResponseEntity<Task> taskPost(TaskCreate taskCreate) {
-        return ResponseEntity.ok(taskService.create(taskCreate));
-    }
-
-    @Override
     @PreAuthorize("@taskAccessHandler.isApprovier(#taskId)")
-    public ResponseEntity<Void> taskTaskIdApprovePost(Long taskId, TaskApprove taskApprove) {
+    public ResponseEntity<Void> approveTask(Long taskId, TaskApprove taskApprove) {
         taskService.approve(taskId, taskApprove);
         return ResponseEntity.ok().build();
     }
 
     @Override
     @PreAuthorize("@taskAccessHandler.isExecutor(#taskId)")
-    public ResponseEntity<Void> taskTaskIdCompletePost(Long taskId, TaskComplete taskComplete) {
+    public ResponseEntity<Void> completeTask(Long taskId, TaskComplete taskComplete) {
         taskService.complete(taskId, taskComplete);
         return ResponseEntity.ok().build();
     }
 
     @Override
+    public ResponseEntity<Task> createTask(TaskCreate taskCreate) {
+        return ResponseEntity.ok(taskService.create(taskCreate));
+    }
+
+    @Override
     @PreAuthorize("@taskAccessHandler.hasAccess(#taskId)")
-    public ResponseEntity<Void> taskTaskIdDelete(Long taskId) {
+    public ResponseEntity<Void> deleteTask(Long taskId) {
         taskService.delete(taskId);
         return ResponseEntity.ok().build();
     }
+
 }

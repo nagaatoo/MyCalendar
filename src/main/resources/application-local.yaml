@@ -4,7 +4,7 @@ server:
 spring:
   sql:
     init:
-      data-locations: data-local.sql
+      data-locations: classpath:db/changelog/data-local.sql
   datasource:
     url: jdbc:postgresql://localhost:5432/calendar
     username: admin

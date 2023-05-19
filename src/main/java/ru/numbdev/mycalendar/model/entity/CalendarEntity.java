@@ -40,8 +40,11 @@ public class CalendarEntity {
     @SequenceGenerator(name = "calendarIdSeq", sequenceName = "calendar_id_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "calendarIdSeq")
     private Long id;
+
     private String title;
     private String ownerLogin;
+    private boolean deleted;
+
     @CreatedBy
     private String createdBy;
     @CreatedDate

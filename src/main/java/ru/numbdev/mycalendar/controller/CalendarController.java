@@ -11,6 +11,7 @@ import ru.numbDev.openapi.model.CalendarCreate;
 import ru.numbDev.openapi.model.CalendarList;
 import ru.numbDev.openapi.model.Pagable;
 import ru.numbdev.mycalendar.service.CalendarService;
+import ru.numbdev.mycalendar.service.crud.CalendarCrudService;
 import ru.numbdev.mycalendar.utils.Utils;
 
 @RestController
@@ -18,6 +19,7 @@ import ru.numbdev.mycalendar.utils.Utils;
 public class CalendarController implements CalendarApi {
 
     private final CalendarService calendarService;
+    private final CalendarCrudService calendarCrudService;
 
     @Override
     public ResponseEntity<Calendar> createCalendar(CalendarCreate calendarCreate) {
@@ -29,7 +31,7 @@ public class CalendarController implements CalendarApi {
 
     @Override
     public ResponseEntity<CalendarList> getCalendars(Pagable params) {
-        return ResponseEntity.ok(calendarService.getList(Utils.getUsername(), params));
+        return ResponseEntity.ok(calendarCrudService.getList(Utils.getUsername(), params));
     }
 
     @Override

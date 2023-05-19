@@ -16,14 +16,17 @@ import ru.numbdev.mycalendar.model.entity.TaskEntity;
 import ru.numbdev.mycalendar.repository.CalendarRepository;
 import ru.numbdev.mycalendar.repository.ScheduleRepository;
 import ru.numbdev.mycalendar.repository.TaskRepository;
+import ru.numbdev.mycalendar.service.crud.CalendarCrudService;
+import ru.numbdev.mycalendar.service.crud.ScheduleCrudService;
+import ru.numbdev.mycalendar.service.crud.TaskCrudService;
 
 @Service
 @RequiredArgsConstructor
 public class TaskService {
 
-    private final TaskRepository taskRepository;
-    private final CalendarRepository calendarRepository;
-    private final ScheduleRepository scheduleRepository;
+    private final TaskCrudService taskCrudService;
+    private final CalendarCrudService calendarCrudService;
+    private final ScheduleCrudService scheduleCrudService;
     private final TaskCreateMapper taskCreateMapper;
     private final TaskMapper taskMapper;
 
@@ -34,29 +37,25 @@ public class TaskService {
         }
 
         var task = taskCreateMapper.dtoToDomain(taskCreate);
-        var calendar = calendarRepository
-                .findById(taskCreate.getCalendarId())
-                .orElseThrow(() -> ExceptionFunctions.ENTITY_NOT_FOUND.apply(taskCreate.getCalendarId()));
+        var calendar = calendarCrudService.getById(taskCreate.getCalendarId());
         task.setCalendar(calendar);
 
         if (taskCreate.getScheduleId() != null) {
-            var schedule = scheduleRepository
-                    .findById(taskCreate.getScheduleId())
-                    .orElseThrow(() -> ExceptionFunctions.ENTITY_NOT_FOUND.apply(taskCreate.getScheduleId()));
+            var schedule = scheduleCrudService.getById(taskCreate.getScheduleId());
             task.setSchedule(schedule);
         }
 
-        return taskMapper.domainToDto(taskRepository.save(task));
+        return taskMapper.domainToDto(taskCrudService.save(task));
     }
 
     @Transactional
     public void approve(Long taskId, TaskApprove taskApprove) {
-        var task = getTask(taskId);
+        var task = taskCrudService.getById(taskId);
         task
                 .setApproved(taskApprove.getApproved())
                 .setApprovingComment(task.getApprovingComment())
                 .setApproveDate(LocalDateTime.now());
-        taskRepository.save(task);
+        taskCrudService.save(task);
     }
 
     @Transactional
@@ -65,19 +64,16 @@ public class TaskService {
             throw ExceptionFunctions.PARAM_IS_INCORRECT.apply("done");
         }
 
-        var task = getTask(taskId);
+        var task = taskCrudService.getById(taskId);
         task
                 .setDone(taskComplete.getDone())
                 .setCompleteText(taskComplete.getCompleteText())
                 .setCompleteDate(LocalDateTime.now());
-        taskRepository.save(task);
+        taskCrudService.save(task);
     }
 
     public void delete(Long taskId) {
-        taskRepository.deleteById(taskId);
+        taskCrudService.delete(taskId);
     }
 
-    private TaskEntity getTask(Long taskId) {
-        return taskRepository.findById(taskId).orElseThrow(() -> ExceptionFunctions.ENTITY_NOT_FOUND.apply(taskId));
-    }
 }

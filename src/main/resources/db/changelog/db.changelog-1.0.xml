@@ -18,6 +18,7 @@
             <column name="first_name" type="varchar(64)" remarks="Имя"/>
             <column name="last_name" type="varchar(64)" remarks="Фамилия"/>
             <column name="middle_name" type="varchar(64)" remarks="Отчество"/>
+            <column name="deleted" type="boolean" remarks="Пользователь удалён" defaultValueBoolean="false"/>
         </createTable>
         <createSequence sequenceName="user_id_seq" startValue="1" incrementBy="1"/>
         <addUniqueConstraint tableName="users" columnNames="login"
@@ -49,6 +50,7 @@
             <column name="created_by" type="text" remarks="Кем создано"/>
             <column name="updated" type="datetime" remarks="Дата обновления"/>
             <column name="updated_by" type="text" remarks="Кем обновлено"/>
+            <column name="deleted" type="boolean" remarks="Календарь удалена" defaultValueBoolean="false"/>
         </createTable>
         <createSequence sequenceName="calendar_id_seq" startValue="1" incrementBy="1"/>
         <addForeignKeyConstraint baseTableName="calendar" baseColumnNames="organization_id"
@@ -135,6 +137,7 @@
             <column name="created_by" type="text" remarks="Кем создано"/>
             <column name="updated" type="datetime" remarks="Дата обновления"/>
             <column name="updated_by" type="text" remarks="Кем обновлено"/>
+            <column name="deleted" type="boolean" remarks="Задача удалена" defaultValueBoolean="false"/>
         </createTable>
         <createSequence sequenceName="task_id_seq" startValue="1" incrementBy="1"/>
         <addForeignKeyConstraint baseTableName="task" baseColumnNames="calendar_id"

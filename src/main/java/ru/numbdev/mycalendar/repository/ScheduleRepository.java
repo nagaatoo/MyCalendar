@@ -8,5 +8,6 @@ import ru.numbdev.mycalendar.model.entity.ScheduleEntity;
 public interface ScheduleRepository extends PagingAndSortingRepository<ScheduleEntity, Long> {
 
     @Modifying
+    @Transactional
     void deleteById(Long id);
 }

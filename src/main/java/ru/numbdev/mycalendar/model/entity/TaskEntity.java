@@ -23,6 +23,7 @@ public class TaskEntity {
     @SequenceGenerator(name = "taskIdSeq", sequenceName = "task_id_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "taskIdSeq")
     private Long id;
+
     private boolean personal;
     private String text;
     private int order;
@@ -36,6 +37,7 @@ public class TaskEntity {
     private LocalDateTime approveDate;
     private LocalDateTime deadline;
     private LocalDateTime completeDate;
+    private boolean deleted;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "calendar_id")

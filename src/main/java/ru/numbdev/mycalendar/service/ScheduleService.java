@@ -17,6 +17,8 @@ import ru.numbdev.mycalendar.model.entity.ScheduleEntity;
 import ru.numbdev.mycalendar.model.entity.TeamEntity;
 import ru.numbdev.mycalendar.model.enums.Role;
 import ru.numbdev.mycalendar.repository.*;
+import ru.numbdev.mycalendar.service.crud.CalendarCrudService;
+import ru.numbdev.mycalendar.service.crud.ScheduleCrudService;
 import ru.numbdev.mycalendar.utils.Utils;
 
 import java.time.LocalDate;
@@ -28,23 +30,21 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ScheduleService {
 
+    private final ScheduleCrudService scheduleCrudService;
     private final OfficialWeekendRepository officialWeekendRepository;
     private final WeekendsRepository weekendsRepository;
-    private final ScheduleRepository scheduleRepository;
     private final UserRepository userRepository;
     private final TeamRepository teamRepository;
-    private final CalendarRepository calendarRepository;
+    private final CalendarCrudService calendarCrudService;
     private final ScheduleGenerateMapper scheduleGenerateMapper;
     private final ScheduleGenerateResultMapper scheduleGenerateResultMapper;
     private final ScheduleCreateMapper scheduleCreateMapper;
 
     @Transactional
     public Schedule create(Long calendarId, ScheduleCreate scheduleCreate) {
-        var calendar = calendarRepository
-                .findById(calendarId)
-                .orElseThrow(() -> ExceptionFunctions.ENTITY_NOT_FOUND.apply(calendarId));
+        var calendar = calendarCrudService.getById(calendarId);
         var schedule = scheduleCreateMapper.dtoToDomain(scheduleCreate);
-        var savedSchedule = scheduleRepository.save(schedule);
+        var savedSchedule = scheduleCrudService.save(schedule);
 
         teamRepository.save(
                 TeamEntity
@@ -60,18 +60,16 @@ public class ScheduleService {
 
     @Transactional
     public Schedule update(Long id, ScheduleCreate scheduleForUpdate) {
-        var schedule = scheduleRepository.findById(id).orElseThrow(() -> ExceptionFunctions.ENTITY_NOT_FOUND.apply(id));
+        var schedule = scheduleCrudService.getById(id);
         schedule.setDays(parseAndCheckSchedule(scheduleForUpdate));
         schedule.setTitle(scheduleForUpdate.getTitle());
         schedule.setWorkDays(schedule.getWorkDays());
-        return scheduleGenerateResultMapper.domainToDto(scheduleRepository.save(schedule));
+        return scheduleGenerateResultMapper.domainToDto(scheduleCrudService.save(schedule));
     }
 
     @Transactional
     public Schedule buildScheduleAndSave(Long calendarId, ScheduleGenerate data) {
-        var calendar = calendarRepository
-                .findById(calendarId)
-                .orElseThrow(() -> ExceptionFunctions.ENTITY_NOT_FOUND.apply(calendarId));
+        var calendar = calendarCrudService.getById(calendarId);
 
         if (CollectionUtils.isEmpty(data.getUsers())) {
             throw ExceptionFunctions.USERS_IS_EMPTY.get();
@@ -80,7 +78,7 @@ public class ScheduleService {
         var schedule = scheduleGenerateMapper.dtoToDomain(data);
         schedule.setDays(buildSchedule(data));
 
-        var savedSchedule = scheduleRepository.save(schedule);
+        var savedSchedule = scheduleCrudService.save(schedule);
         saveTeam(calendar, savedSchedule, data);
         return scheduleGenerateResultMapper.domainToDto(savedSchedule);
     }
@@ -224,15 +222,14 @@ public class ScheduleService {
 
     @Transactional(readOnly = true)
     public Schedule getById(Long id) {
-        var schedule = scheduleRepository.findById(id)
-                .orElseThrow(() -> ExceptionFunctions.PARAM_IS_INCORRECT.apply("id"));
+        var schedule = scheduleCrudService.getById(id);
         return scheduleGenerateResultMapper.domainToDto(schedule);
     }
 
     @Transactional
     public void removeSchedule(Long id) {
         teamRepository.deleteBySchedule(id);
-        scheduleRepository.deleteById(id);
+        scheduleCrudService.delete(id);
     }
 
     @Transactional

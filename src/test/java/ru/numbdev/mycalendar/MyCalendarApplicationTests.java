@@ -78,10 +78,10 @@ class MyCalendarApplicationTests {
     }
 
     User saveUser(String login, String fio) {
-        User userr = new User();
-        userr.setFIO(fio);
-        userr.login(login);
-        return userService.create(userr);
+        User user = new User();
+        user.setFIO(fio);
+        user.login(login);
+        return userService.create(user);
     }
 
     @Test

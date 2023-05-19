@@ -10,9 +10,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.numbDev.openapi.model.User;
 import ru.numbDev.openapi.model.UserAuth;
-import ru.numbdev.mycalendar.exception.ExceptionFunctions;
 import ru.numbdev.mycalendar.mapper.UserMapper;
-import ru.numbdev.mycalendar.repository.UserRepository;
+import ru.numbdev.mycalendar.service.crud.UserCrudService;
 
 import java.util.Date;
 
@@ -25,8 +24,8 @@ public class UserService {
     @Value("${jwt.secret}")
     private String secret;
 
+    private final UserCrudService userCrudService;
     private final BCryptPasswordEncoder passwordEncoder;
-    private final UserRepository userRepository;
     private final UserMapper userMapper;
 
     public String getToken(UserAuth auth) {
@@ -46,14 +45,14 @@ public class UserService {
     public User create(User user) {
         var entity = userMapper.dtoToDomain(user);
         entity.setPassword(passwordEncoder.encode("1234"));
-        return userMapper.domainToDto(userRepository.save(entity));
+        return userMapper.domainToDto(userCrudService.save(entity));
     }
 
     @Transactional
     public User update(String login, User user) {
-        var entity = userRepository.findByLogin(login).orElseThrow(() -> ExceptionFunctions.USER_NOT_FOUND.apply(login));
+        var entity = userCrudService.getById(login);
         userMapper.fillDto(user, entity);
         entity.setLogin(login);
-        return userMapper.domainToDto(userRepository.save(entity));
+        return userMapper.domainToDto(userCrudService.save(entity));
     }
 }

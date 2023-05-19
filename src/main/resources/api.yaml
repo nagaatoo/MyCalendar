@@ -135,6 +135,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+    delete:
+      operationId: deleteCalendar
+      description: Удалить календарь
+      responses:
+        '200':
+          description: Удален
+        '400':
+          description: Ошибка запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
       tags:
         - calendar
   "/schedule/calendar/{calendarId}":
@@ -359,6 +371,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Organization'
+        '400':
+          description: Ошибка запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      operationId: deleteOrganization
+      description: Удалено
+      responses:
+        '200':
+          description: Удален
         '400':
           description: Ошибка запроса
           content:

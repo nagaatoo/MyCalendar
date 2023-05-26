@@ -2,6 +2,10 @@ server:
   port: 8888
 
 spring:
+  sql:
+    init:
+      data-locations: classpath:db/changelog/data-local.sql
+#      mode: always
   datasource:
     url: jdbc:postgresql://localhost:5432/calendar
     username: admin
@@ -15,15 +19,12 @@ spring:
       max-lifetime: 1000
       auto-commit: true
   jpa:
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
     database: POSTGRESQL
     show-sql: false
     open-in-view: false
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
-    hibernate:
-      ddl-auto:
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.xml
     enabled: true

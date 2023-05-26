@@ -5,8 +5,11 @@ insert into users (login, email, phone, active, first_name, last_name, middle_na
 insert into users (login, email, phone, active, first_name, last_name, middle_name) values ('chepurko.c', 'chepurko@fake.ru', '89999999999', true, 'Чепурко', 'Чепур', 'Чепурович');
 insert into users (login, email, phone, active, first_name, last_name, middle_name) values ('aleksandrov.d', 'aleksandrov@fake.ru', '89999999999', true, 'Александров', 'Александр', 'Александрович');
 insert into users (login, email, phone, active, first_name, last_name, middle_name) values ('vladimirov.d', 'vladimirov@fake.ru', '89999999999', true, 'Владимиров', 'Владимир', 'Владимирович');
+SELECT setval('user_id_seq', 10, true);
 
 insert into organization (name, email, owner_login, created_by, created, updated_by, updated) values ('ООО Ромашка', 'romashka@mail.ru', 'ivanov.i', 'ivanov.i', now(), 'ivanov.i', now());
 insert into organization (name, email, owner_login, created_by, created, updated_by, updated) values ('ООО Петрушка', 'petrushka@mail.ru', 'ivanov.i', 'ivanov.i', now(), 'ivanov.i', now());
+SELECT setval('organization_id_seq', 10, true);
 
 insert into calendar (title, owner_login, created_by, created, updated_by, updated, organization_id) values ('Тесовый календарь', 'ivanov.i', 'ivanov.i', now(), 'ivanov.i', now(), 1);
+SELECT setval('calendar_id_seq', 10, true);

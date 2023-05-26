@@ -30,6 +30,12 @@ public class CalendarController implements CalendarApi {
     }
 
     @Override
+    public ResponseEntity<Void> deleteCalendar(Long id) {
+        calendarCrudService.delete(id);
+        return ResponseEntity.ok().build();
+    }
+
+    @Override
     public ResponseEntity<CalendarList> getCalendars(Pagable params) {
         return ResponseEntity.ok(calendarCrudService.getList(Utils.getUsername(), params));
     }
@@ -40,7 +46,7 @@ public class CalendarController implements CalendarApi {
         return ResponseEntity.ok(null);
     }
 
-    @Override
+//    @Override
     public ResponseEntity<Calendar> updateCalendar(Long id, CalendarCreate calendarCreate) {
         return ResponseEntity.ok(calendarService.update(id, calendarCreate));
     }

@@ -13,6 +13,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -54,17 +55,18 @@ class MyCalendarApplicationTests {
         Mockito.when(SecurityContextHolder.getContext().getAuthentication().getPrincipal()).thenReturn(userDetails);
     }
 
+    @WithMockUser
     @Test
     void contextLoads() throws JsonProcessingException {
         calendarService.uploadHolidays();
 
-        var owner = saveUser("ivanov.i", "Иванов Иван Иванович");
+        var owner = saveUser("ivanov.ii", "Иванов Иван Иванович");
         assert owner != null;
 
-        var manager = saveUser("petrov.p", "Петров Петр Петрович");
+        var manager = saveUser("petrov.pp", "Петров Петр Петрович");
         assert manager != null;
 
-        var customer = saveUser("denisov.d", "Денисов Денис Денисович");
+        var customer = saveUser("denisov.dd", "Денисов Денис Денисович");
         assert customer != null;
 
         var organization = saveOrganization(owner.getLogin(), "ООО Ромашка ", "nnagatoo@mai.ru");
@@ -85,6 +87,7 @@ class MyCalendarApplicationTests {
     }
 
     @Test
+    @WithMockUser
     void buildCalendar() {
         var params = new ScheduleGenerate();
         params.setTitle("Тестовое расписание");

@@ -14,7 +14,7 @@ public class ScheduleCrudService implements CrudService<ScheduleEntity, Long> {
 
     @Override
     public ScheduleEntity save(ScheduleEntity entity) {
-        return null;
+        return scheduleRepository.save(entity);
     }
 
     @Override

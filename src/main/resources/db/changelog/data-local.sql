@@ -1,5 +1,6 @@
 insert into users (login, email, phone, active, first_name, last_name, middle_name) values ('admin', 'admin@fake.ru', '89999999999', true, 'Админ', 'Админ', 'Админ');
 insert into users (login, email, phone, active, first_name, last_name, middle_name) values ('ivanov.i', 'ivanov@fake.ru', '89999999999', true, 'Иванов', 'Иван', 'Иванович');
+-- insert into users (login, password, email, phone, active, first_name, last_name, middle_name) values ('ivanov.i', '', 'ivanov@fake.ru', '89999999999', true, 'Иванов', 'Иван', 'Иванович');
 insert into users (login, email, phone, active, first_name, last_name, middle_name) values ('petrov.p', 'petrov@fake.ru', '89999999999', true, 'Петров', 'Петр', 'Петрович');
 insert into users (login, email, phone, active, first_name, last_name, middle_name) values ('denisov.d', 'denisov@fake.ru', '89999999999', true, 'Денисов', 'Денис', 'Денисович');
 insert into users (login, email, phone, active, first_name, last_name, middle_name) values ('chepurko.c', 'chepurko@fake.ru', '89999999999', true, 'Чепурко', 'Чепур', 'Чепурович');

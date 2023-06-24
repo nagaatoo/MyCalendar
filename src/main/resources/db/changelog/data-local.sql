@@ -1,11 +1,12 @@
-insert into users (login, email, phone, active, first_name, last_name, middle_name) values ('admin', 'admin@fake.ru', '89999999999', true, 'Админ', 'Админ', 'Админ');
-insert into users (login, email, phone, active, first_name, last_name, middle_name) values ('ivanov.i', 'ivanov@fake.ru', '89999999999', true, 'Иванов', 'Иван', 'Иванович');
--- insert into users (login, password, email, phone, active, first_name, last_name, middle_name) values ('ivanov.i', '', 'ivanov@fake.ru', '89999999999', true, 'Иванов', 'Иван', 'Иванович');
-insert into users (login, email, phone, active, first_name, last_name, middle_name) values ('petrov.p', 'petrov@fake.ru', '89999999999', true, 'Петров', 'Петр', 'Петрович');
-insert into users (login, email, phone, active, first_name, last_name, middle_name) values ('denisov.d', 'denisov@fake.ru', '89999999999', true, 'Денисов', 'Денис', 'Денисович');
-insert into users (login, email, phone, active, first_name, last_name, middle_name) values ('chepurko.c', 'chepurko@fake.ru', '89999999999', true, 'Чепурко', 'Чепур', 'Чепурович');
-insert into users (login, email, phone, active, first_name, last_name, middle_name) values ('aleksandrov.d', 'aleksandrov@fake.ru', '89999999999', true, 'Александров', 'Александр', 'Александрович');
-insert into users (login, email, phone, active, first_name, last_name, middle_name) values ('vladimirov.d', 'vladimirov@fake.ru', '89999999999', true, 'Владимиров', 'Владимир', 'Владимирович');
+-- password: 123
+insert into users (login, email, phone, active, first_name, last_name, middle_name, password) values ('admin', 'admin@fake.ru', '89999999999', true, 'Админ', 'Админ', 'Админ', '$2a$12$BWtarudkX6m1nNjDgRUmz.WZS3XoEcyIMDuYys0BCS3pMrgfke/8K');
+insert into users (login, email, phone, active, first_name, last_name, middle_name, password) values ('ivanov.i', 'ivanov@fake.ru', '89999999999', true, 'Иванов', 'Иван', 'Иванович', '$2a$12$BWtarudkX6m1nNjDgRUmz.WZS3XoEcyIMDuYys0BCS3pMrgfke/8K');
+-- insert into users (login, password, email, phone, active, first_name, last_name, middle_name, password) values ('ivanov.i', '', 'ivanov@fake.ru', '89999999999', true, 'Иванов', 'Иван', 'Иванович', '$2a$12$BWtarudkX6m1nNjDgRUmz.WZS3XoEcyIMDuYys0BCS3pMrgfke/8K');
+insert into users (login, email, phone, active, first_name, last_name, middle_name, password) values ('petrov.p', 'petrov@fake.ru', '89999999999', true, 'Петров', 'Петр', 'Петрович', '$2a$12$BWtarudkX6m1nNjDgRUmz.WZS3XoEcyIMDuYys0BCS3pMrgfke/8K');
+insert into users (login, email, phone, active, first_name, last_name, middle_name, password) values ('denisov.d', 'denisov@fake.ru', '89999999999', true, 'Денисов', 'Денис', 'Денисович', '$2a$12$BWtarudkX6m1nNjDgRUmz.WZS3XoEcyIMDuYys0BCS3pMrgfke/8K');
+insert into users (login, email, phone, active, first_name, last_name, middle_name, password) values ('chepurko.c', 'chepurko@fake.ru', '89999999999', true, 'Чепурко', 'Чепур', 'Чепурович', '$2a$12$BWtarudkX6m1nNjDgRUmz.WZS3XoEcyIMDuYys0BCS3pMrgfke/8K');
+insert into users (login, email, phone, active, first_name, last_name, middle_name, password) values ('aleksandrov.d', 'aleksandrov@fake.ru', '89999999999', true, 'Александров', 'Александр', 'Александрович', '$2a$12$BWtarudkX6m1nNjDgRUmz.WZS3XoEcyIMDuYys0BCS3pMrgfke/8K');
+insert into users (login, email, phone, active, first_name, last_name, middle_name, password) values ('vladimirov.d', 'vladimirov@fake.ru', '89999999999', true, 'Владимиров', 'Владимир', 'Владимирович', '$2a$12$BWtarudkX6m1nNjDgRUmz.WZS3XoEcyIMDuYys0BCS3pMrgfke/8K');
 SELECT setval('user_id_seq', 10, true);
 
 insert into organization (name, email, owner_login, created_by, created, updated_by, updated) values ('ООО Ромашка', 'romashka@mail.ru', 'ivanov.i', 'ivanov.i', now(), 'ivanov.i', now());

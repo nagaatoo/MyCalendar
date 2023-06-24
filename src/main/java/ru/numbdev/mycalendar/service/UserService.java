@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.numbDev.openapi.model.User;
 import ru.numbDev.openapi.model.UserAuth;
+import ru.numbdev.mycalendar.exception.ExceptionFunctions;
 import ru.numbdev.mycalendar.mapper.UserMapper;
 import ru.numbdev.mycalendar.service.crud.UserCrudService;
 
@@ -29,9 +30,19 @@ public class UserService {
     private final UserMapper userMapper;
 
     public String getToken(UserAuth auth) {
-        return Jwts.builder().setSubject(auth.getLogin()).setIssuedAt(new Date(System.currentTimeMillis()))
+        var user = userCrudService.getById(auth.getLogin());
+
+        if (checkPassword(user.getPassword(), auth.getPassword())) {
+            throw ExceptionFunctions.INCORRECT_PASSWORD.apply(user.getLogin());
+        }
+
+        return Jwts.builder().setSubject(user.getLogin()).setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY * 1000))
                 .signWith(SignatureAlgorithm.HS512, secret).compact();
+    }
+
+    private boolean checkPassword(String current, String trying) {
+        return current.equals(passwordEncoder.encode(trying));
     }
 
     public Boolean validateToken(String token, UserDetails userDetails) {
